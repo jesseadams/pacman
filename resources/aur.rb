@@ -26,3 +26,8 @@ attribute :options, :kind_of => String
 attribute :pkgbuild_src, :default => false
 attribute :patches, :kind_of => Array, :default => []
 attribute :exists, :default => false
+
+def initialize(*args)
+  super
+  @action = :build
+end

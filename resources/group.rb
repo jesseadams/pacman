@@ -22,3 +22,8 @@ actions :install, :remove
 attribute :package_name, :name_attribute => true
 attribute :options, :kind_of => String
 attribute :exists, :default => false
+
+def initialize(*args)
+  super
+  @action = :install
+end
