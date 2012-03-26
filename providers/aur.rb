@@ -91,7 +91,7 @@ action :build do
       action :nothing
     end
     em.run_action(:run)
-    @updated = true
+    new_resource.updated_by_last_action(true)
   end
 end
 
@@ -101,7 +101,7 @@ action :install do
     execute "install AUR package #{new_resource.name}-#{new_resource.version}" do
       command "pacman -U --noconfirm  --noprogressbar #{new_resource.builddir}/#{new_resource.name}/#{new_resource.name}-#{new_resource.version}.pkg.tar.xz"
     end
-    @updated = true
+    new_resource.updated_by_last_action(true)
   end
 end
 
