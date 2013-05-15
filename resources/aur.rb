@@ -19,6 +19,8 @@
 
 actions :build, :install
 
+default_action :install
+
 attribute :package_name, :name_attribute => true
 attribute :version, :default => nil
 attribute :builddir, :default => "#{Chef::Config[:file_cache_path]}/builds"

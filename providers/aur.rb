@@ -26,9 +26,9 @@ action :build do
   aurfile = "#{new_resource.builddir}/#{new_resource.name}/#{new_resource.name}-#{new_resource.version}.pkg.tar.xz"
 
   Chef::Log.debug("Checking for #{aurfile}")
-  unless ::File.exists?("#{aurfile}")
+  unless ::File.exists?(aurfile)
     Chef::Log.debug("Creating build directory")
-    d = directory "#{new_resource.builddir}" do
+    d = directory new_resource.builddir do
       owner "root"
       group "root"
       mode 0755
@@ -68,8 +68,8 @@ action :build do
     if new_resource.patches.length > 0
       Chef::Log.debug("Adding new patches")
       new_resource.patches.each do |patch|
-        pfile = cookbook_file "#{new_resource.builddir}/#{new_resource.name}/#{patch}" do
-          source "#{patch}"
+        pfile = cookbook_file ::File.join(new_resource.builddir, new_resource.name, patch) do
+          source patch
           mode 0644
           action :nothing
         end
@@ -86,12 +86,12 @@ action :build do
 
     Chef::Log.debug("Building package #{new_resource.name}")
     em = execute "makepkg -s --asroot" do
-      cwd "#{new_resource.builddir}/#{new_resource.name}"
-      creates "#{aurfile}"
+      cwd ::File.join(new_resource.builddir, new_resource.name)
+      creates aurfile
       action :nothing
     end
     em.run_action(:run)
-    @updated = true
+    new_resource.updated_by_last_action(true)
   end
 end
 
@@ -101,7 +101,7 @@ action :install do
     execute "install AUR package #{new_resource.name}-#{new_resource.version}" do
       command "pacman -U --noconfirm  --noprogressbar #{new_resource.builddir}/#{new_resource.name}/#{new_resource.name}-#{new_resource.version}.pkg.tar.xz"
     end
-    @updated = true
+    new_resource.updated_by_last_action(true)
   end
 end
 

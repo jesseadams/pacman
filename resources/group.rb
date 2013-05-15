@@ -19,6 +19,8 @@
 
 actions :install, :remove
 
+default_action :install
+
 attribute :package_name, :name_attribute => true
 attribute :options, :kind_of => String
 attribute :exists, :default => false
