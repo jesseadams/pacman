@@ -24,6 +24,7 @@ include Chef::Mixin::ShellOut
 action :build do
   get_pkg_version
   aurfile = "#{new_resource.builddir}/#{new_resource.name}/#{new_resource.name}-#{new_resource.version}.pkg.tar.xz"
+  package_namespace = new_resource.name[0..1]
 
   Chef::Log.debug("Checking for #{aurfile}")
   unless ::File.exists?(aurfile)
@@ -38,7 +39,7 @@ action :build do
 
     Chef::Log.debug("Retrieving source for #{new_resource.name}")
     r = remote_file "#{new_resource.builddir}/#{new_resource.name}.tar.gz" do
-      source "http://aur.archlinux.org/packages/#{new_resource.name}/#{new_resource.name}.tar.gz"
+      source "https://aur.archlinux.org/packages/#{package_namespace}/#{new_resource.name}/#{new_resource.name}.tar.gz"
       owner "root"
       group "root"
       mode 0644
@@ -111,8 +112,8 @@ def get_pkg_version
   a = ''
   if ::File.exists?("#{new_resource.builddir}/#{new_resource.name}/PKGBUILD")
     ::File.open("#{new_resource.builddir}/#{new_resource.name}/PKGBUILD").each do |line|
-      v = line.split("=")[1].chomp if line =~ /^pkgver/
-      r = line.split("=")[1].chomp if line =~ /^pkgrel/
+      v = line.split("=")[1].chomp if line =~ /^pkgver=/
+      r = line.split("=")[1].chomp if line =~ /^pkgrel=/
       if line =~ /^arch/
         if line.match 'any'
           a = 'any'
