@@ -1,3 +1,5 @@
+[![Travis CI](https://travis-ci.org/jesseadams/pacman.png)](https://travis-ci.org/jesseadams/pacman)
+
 DESCRIPTION
 ===========
 
@@ -48,7 +50,7 @@ LICENSE AND AUTHOR
 ==================
 
 Author:: Joshua Timberman (<joshua@opscode.com>)
-
+Maintainer:: Jesse R. Adams (jesse <at> techno <dash> geeks <dot> org)
 Copyright:: Opscode, Inc. (<legal@opscode.com>)
 
 Licensed under the Apache License, Version 2.0 (the "License");
