@@ -1,3 +1,9 @@
+## v1.1.0:
+
+### Bug
+
+- Added package namespaces to AUR package installation
+
 ## v1.0.4:
 
 ### Bug
