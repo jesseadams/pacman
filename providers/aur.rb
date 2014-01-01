@@ -86,7 +86,7 @@ action :build do
     end
 
     Chef::Log.debug("Building package #{new_resource.name}")
-    em = execute "makepkg -s --asroot" do
+    em = execute "makepkg -s --asroot --noconfirm" do
       cwd ::File.join(new_resource.builddir, new_resource.name)
       creates aurfile
       action :nothing
