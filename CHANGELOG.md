@@ -1,3 +1,7 @@
+## v1.1.1:
+
+- Added --noconfirm to to makepkg runs to not prompt on dependencies (thanks [dvolker](https://github.com/dvolker)
+
 ## v1.1.0:
 
 ### Bug
