@@ -18,3 +18,4 @@
 #
 
 default[:pacman][:build_dir] = "#{Chef::Config[:file_cache_path]}/builds"
+default[:pacman][:build_user] = "root"
