@@ -102,8 +102,9 @@ action :build do
 end
 
 action :install do
-  unless @aurpkg.exists
-    get_pkg_version
+  get_pkg_version
+
+  unless @aurpkg.exists && new_resource.version == @aurpkg.installed_version
     execute "install AUR package #{new_resource.name}-#{new_resource.version}" do
       command "pacman -U --noconfirm  --noprogressbar #{new_resource.builddir}/#{new_resource.name}/#{new_resource.name}-#{new_resource.version}.pkg.tar.xz"
     end
@@ -140,4 +141,7 @@ def load_current_resource
   p = shell_out("pacman -Qi #{new_resource.package_name}")
   exists = p.stdout.include?(new_resource.package_name)
   @aurpkg.exists(exists)
+  p.stdout.match(/Version +: ([\w.-]+).+Architecture +: (\w+)/m) do |match|
+    @aurpkg.installed_version("#{match[1]}-#{match[2]}")
+  end
 end
