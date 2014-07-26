@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: pacman
-# Resource:: group
+# Attribute:: default
 #
 # Copyright:: 2010, Opscode, Inc <legal@opscode.com>
 #
@@ -17,14 +17,4 @@
 # limitations under the License.
 #
 
-actions :build, :install
-
-default_action :install
-
-attribute :package_name, :name_attribute => true
-attribute :version, :default => nil
-attribute :builddir, :default => node[:pacman][:build_dir]
-attribute :options, :kind_of => String
-attribute :pkgbuild_src, :default => false
-attribute :patches, :kind_of => Array, :default => []
-attribute :exists, :default => false
+default[:pacman][:build_dir] = "#{Chef::Config[:file_cache_path]}/builds"
