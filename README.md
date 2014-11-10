@@ -38,6 +38,18 @@ Use the `pacman_aur` resource to install packages from ArchLinux's AUR repositor
 * `pkgbuild_src` - whether to use an included PKGBUILD file, put the PKGBUILD file in in the `files/default` directory.
 * patches - array of patch names, as files in `files/default` that should be applied for the package.
 
+`pacman_yaourt`
+------------
+
+[yaourt](https://www.archlinux.fr/man/yaourt.8.html) is a wrapper for pacman and adds AUR support, you can use it instead of just using pacman, and it will transparently install things from ABS if found and if not, get them from AUR.
+
+Just use `pacman_yaourt` as the resource for installing packages and you'll be happy.
+
+### Actions:
+
+* :install - Installs the package from ABS or AUR if not found in ABS.
+
+
 http://aur.archlinux.org/
 
 USAGE

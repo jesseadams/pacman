@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: pacman
-# Resource:: aur
+# Resource:: yaourt
 #
 # Copyright:: 2010, Opscode, Inc <legal@opscode.com>
 #
@@ -22,9 +22,4 @@ actions :build, :install
 default_action :install
 
 attribute :package_name, :name_attribute => true
-attribute :version, :default => nil
-attribute :builddir, :default => "#{Chef::Config[:file_cache_path]}/builds"
-attribute :options, :kind_of => String
-attribute :pkgbuild_src, :default => false
-attribute :patches, :kind_of => Array, :default => []
 attribute :exists, :default => false
