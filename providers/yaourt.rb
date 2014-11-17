@@ -24,10 +24,13 @@ require 'chef/mixin/shell_out'
 require 'chef/mixin/language'
 include Chef::Mixin::ShellOut
 
+# AUR doesn't track package versions, only current version is hosted on AUR.
+# See: https://wiki.archlinux.org/index.php/downgrading_packages#AUR_packages
+# Yaourt will also resolve packages from AUR or standard pacman repos.
 action :install do
   unless @aurpkg.exists
-    execute "install AUR package #{new_resource.name}-#{new_resource.version} with yaourt" do
-      command "yaourt -Sbb --nocolor --noconfirm #{new_resource.name}-#{new_resource.version}"
+    execute "installing package #{new_resource.name} with yaourt" do
+      command "yaourt -S --nocolor --noconfirm #{new_resource.name}"
     end
     new_resource.updated_by_last_action(true)
   end
@@ -37,9 +40,9 @@ def load_current_resource
   @aurpkg = Chef::Resource::PacmanYaourt.new(new_resource.name)
   @aurpkg.package_name(new_resource.package_name)
 
-  Chef::Log.info("Checking pacman for #{new_resource.package_name}")
-  package_details = shell_out("pacman -Qi #{new_resource.package_name}")
-  package_details = package_details.stdout.split("\n")
-  exists = package_details[0].split(":")[1].chomp.include?(@aurpkg.package_name)
-  @aurpkg.exists(exists)
+  Chef::Log.info("Checking if #{new_resource.package_name} is installed")
+  # pacman -Qqs will only return things if the package is currently installed
+  # if nothing (nil) is returned due to error, package doesn't exist locally
+  package_installed = system("pacman -Qqs #{new_resource.package_name}")
+  @aurpkg.exists(package_installed)
 end
