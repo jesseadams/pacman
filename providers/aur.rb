@@ -88,8 +88,7 @@ action :build do
     end
 
     Chef::Log.debug("Building package #{new_resource.name}")
-    as_root = node[:pacman][:build_user] == "root" ? " --asroot" : ""
-    em = execute "makepkg -s --noconfirm#{as_root}" do
+    em = execute "makepkg -s --noconfirm" do
       cwd ::File.join(new_resource.builddir, new_resource.name)
       creates aurfile
       user node[:pacman][:build_user]

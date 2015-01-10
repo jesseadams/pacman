@@ -16,7 +16,7 @@ ATTRIBUTES
 | Attribute                    | Default                                   | Description                                             |
 |------------------------------|-------------------------------------------|---------------------------------------------------------|
 | `node[:pacman][:build_dir]`  | `#{Chef:Config[:file_cache_path]}/builds` | The default directory where AUR packages will be built. |
-| `node[:pacman][:build_user]` | `root`                                    | The user that will build AUR packages.                  |
+| `node[:pacman][:build_user]` | `nobody`                                    | The user that will build AUR packages.                  |
 
 RESOURCES
 =========
