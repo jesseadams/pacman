@@ -123,7 +123,7 @@ def get_pkg_version
         if line.match 'any'
           a = 'any'
         else
-          a = node.kernel.machine
+          a = node[:kernel][:machine]
         end
       end
     end
