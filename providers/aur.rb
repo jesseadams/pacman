@@ -30,8 +30,8 @@ action :build do
   unless ::File.exists?(aurfile)
     Chef::Log.debug("Creating build directory")
     d = directory new_resource.builddir do
-      owner "root"
-      group "root"
+      owner node[:pacman][:build_user]
+      group node[:pacman][:build_user]
       mode 0755
       action :nothing
     end
@@ -40,8 +40,8 @@ action :build do
     Chef::Log.debug("Retrieving source for #{new_resource.name}")
     r = remote_file "#{new_resource.builddir}/#{new_resource.name}.tar.gz" do
       source "https://aur.archlinux.org/packages/#{package_namespace}/#{new_resource.name}/#{new_resource.name}.tar.gz"
-      owner "root"
-      group "root"
+      owner node[:pacman][:build_user]
+      group node[:pacman][:build_user]
       mode 0644
       action :nothing
     end
@@ -50,6 +50,8 @@ action :build do
     Chef::Log.debug("Untarring source package for #{new_resource.name}")
     e = execute "tar -xf #{new_resource.name}.tar.gz" do
       cwd new_resource.builddir
+      user node[:pacman][:build_user]
+      group node[:pacman][:build_user]
       action :nothing
     end
     e.run_action(:run)
@@ -58,8 +60,8 @@ action :build do
       Chef::Log.debug("Replacing PKGBUILD with custom version")
       pkgb = cookbook_file "#{new_resource.builddir}/#{new_resource.name}/PKGBUILD" do
         source "PKGBUILD"
-        owner "root"
-        group "root"
+        owner node[:pacman][:build_user]
+        group node[:pacman][:build_user]
         mode 0644
         action :nothing
       end
@@ -86,9 +88,11 @@ action :build do
     end
 
     Chef::Log.debug("Building package #{new_resource.name}")
-    em = execute "makepkg -s --asroot --noconfirm" do
+    em = execute "makepkg -s --noconfirm" do
       cwd ::File.join(new_resource.builddir, new_resource.name)
       creates aurfile
+      user node[:pacman][:build_user]
+      group node[:pacman][:build_user]
       action :nothing
     end
     em.run_action(:run)
@@ -97,8 +101,9 @@ action :build do
 end
 
 action :install do
-  unless @aurpkg.exists
-    get_pkg_version
+  get_pkg_version
+
+  unless @aurpkg.exists && new_resource.version == @aurpkg.installed_version
     execute "install AUR package #{new_resource.name}-#{new_resource.version}" do
       command "pacman -U --noconfirm  --noprogressbar #{new_resource.builddir}/#{new_resource.name}/#{new_resource.name}-#{new_resource.version}.pkg.tar.xz"
     end
@@ -118,7 +123,7 @@ def get_pkg_version
         if line.match 'any'
           a = 'any'
         else
-          a = node.kernel.machine
+          a = node[:kernel][:machine]
         end
       end
     end
@@ -135,4 +140,7 @@ def load_current_resource
   p = shell_out("pacman -Qi #{new_resource.package_name}")
   exists = p.stdout.include?(new_resource.package_name)
   @aurpkg.exists(exists)
+  p.stdout.match(/Version +: ([\w.-]+).+Architecture +: (\w+)/m) do |match|
+    @aurpkg.installed_version("#{match[1]}-#{match[2]}")
+  end
 end
