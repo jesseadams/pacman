@@ -23,4 +23,3 @@ default_action :install
 
 attribute :packages, Array, :name_attribute => true
 attribute :options, :kind_of => String
-attribute :exists, :default => false
