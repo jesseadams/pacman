@@ -40,6 +40,21 @@ Use the `pacman_aur` resource to install packages from ArchLinux's AUR repositor
 
 http://aur.archlinux.org/
 
+`pacman_packages`
+-----------------
+
+Use the `pacman_packages` resource to install or remove multiple pacman packages at once.
+
+### Actions:
+
+* :install - Installs the provided list of packages
+* :remove  - Uninstalls the provided list of packages
+
+### Parameters:
+
+* `packages`: Array of packages to install/remove.
+* `options`: String of options to add to the pacman command.
+
 USAGE
 =====
 
