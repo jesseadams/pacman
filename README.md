@@ -43,7 +43,7 @@ http://aur.archlinux.org/
 `pacman_packages`
 -----------------
 
-Use the `pacman_packages` resource to install or remote multiple pacman packages at once.
+Use the `pacman_packages` resource to install or remove multiple pacman packages at once.
 
 ### Actions:
 
