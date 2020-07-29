@@ -1,0 +1,28 @@
+---
+driver:
+  name: dokken
+
+provisioner:
+  name: dokken
+
+transport:
+  name: dokken
+
+verifier:
+  name: inspec
+
+platforms:
+  - name: archlinux
+    driver:
+      image: archlinux
+      pid_one_command: /usr/lib/systemd/systemd
+
+suites:
+  - name: default
+    run_list:
+      - recipe[pacman::default]
+      - recipe[pacman_test::default]
+    attributes:
+    verifier:
+      inspec_tests:
+        - test/integration/default
