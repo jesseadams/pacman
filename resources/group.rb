@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: pacman
+# Cookbook:: pacman
 # Resource:: group
 #
 # Copyright:: 2010, Opscode, Inc <legal@opscode.com>
@@ -17,10 +17,37 @@
 # limitations under the License.
 #
 
-actions :install, :remove
-
 default_action :install
 
-attribute :package_name, :name_attribute => true
-attribute :options, :kind_of => String
-attribute :exists, :default => false
+property :group_name, String, name_property: true
+property :options, String, default: ''
+
+load_current_value do |new_resource|
+  group_name new_resource.group_name
+end
+
+action :install do
+  execute "group install #{new_resource.group_name}" do
+    command "pacman --sync --noconfirm --noprogressbar#{expand_options(new_resource.options)} #{new_resource.group_name}"
+    environment('LC_ALL' => nil)
+    not_if { shell_out("pacman -Qg #{new_resource.group_name}").stdout.include?(new_resource.group_name) }
+  end
+end
+
+action :remove do
+  execute "group uninstall #{new_resource.group_name}" do
+    command "pacman --remove --noconfirm --noprogressbar#{expand_options(new_resource.options)} #{new_resource.group_name}"
+    environment('LC_ALL' => nil)
+    only_if { shell_out("pacman -Qg #{new_resource.group_name}").stdout.include?(new_resource.group_name) }
+  end
+end
+
+action_class.class_eval do
+  def expand_options(options)
+    if options
+      " #{options.is_a?(Array) ? Shellwords.join(options) : options}"
+    else
+      ''
+    end
+  end
+end
