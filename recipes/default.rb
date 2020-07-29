@@ -1,8 +1,8 @@
 #
-# Cookbook Name:: pacman
+# Cookbook:: pacman
 # Recipe:: default
 #
-# Copyright 2010, Opscode, Inc.
+# Copyright:: 2010, Opscode, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,8 +17,6 @@
 # limitations under the License.
 #
 
-e = execute "pacman -Sy" do
-  action :nothing
-end
+execute 'pacman -Sy'
 
-e.run_action(:run)
+execute 'pacman -S --noconfirm base-devel'
