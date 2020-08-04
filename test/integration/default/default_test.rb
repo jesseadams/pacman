@@ -4,6 +4,7 @@ end
 
 describe package('tinydns') do
   it { should be_installed }
+  its('version') { should eq '0.3-1' }
 end
 
 describe package('coin-or-coinutils') do
