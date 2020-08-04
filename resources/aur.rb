@@ -21,23 +21,23 @@ default_action :install
 
 property :package_name, String, name_property: true
 property :version, [String, NilClass], default: lazy {
-  v = ''
-  r = ''
-  a = ''
+  version = ''
+  release = ''
+  arch = ''
   if ::File.exist?("#{builddir}/#{name}/PKGBUILD")
     ::File.open("#{builddir}/#{name}/PKGBUILD").each do |line|
-      v = line.split('=')[1].chomp if line =~ /^pkgver=/
-      r = line.split('=')[1].chomp if line =~ /^pkgrel=/
+      version = line.split('=')[1].chomp if line =~ /^pkgver=/
+      release = line.split('=')[1].chomp if line =~ /^pkgrel=/
       next unless line =~ /^arch/
 
-      a = if line.match? 'any'
-            'any'
-          else
-            node['kernel']['machine']
-          end
+      arch = if line.match? 'any'
+               'any'
+             else
+               node['kernel']['machine']
+             end
     end
-    Chef::Log.debug("Setting version of #{name} to #{v}-#{r}-#{a}")
-    "#{v}-#{r}-#{a}"
+    Chef::Log.debug("Setting version of #{name} to #{version}-#{release}-#{arch}")
+    "#{version}-#{release}-#{arch}"
   end
 }
 property :builddir, String, default: "#{Chef::Config[:file_cache_path]}/builds"
